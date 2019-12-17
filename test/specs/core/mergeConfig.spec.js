@@ -33,25 +33,26 @@ describe('core::mergeConfig', function() {
   it('should not inherit request options', function() {
     var localDefaults = {
       method: '__sample method__',
-      params: '__sample params__',
       data: { foo: true }
     };
     var merged = mergeConfig(localDefaults, {});
     expect(merged.method).toEqual(undefined);
-    expect(merged.params).toEqual(undefined);
     expect(merged.data).toEqual(undefined);
   });
 
-  it('should merge auth, headers, proxy with defaults', function() {
+  it('should merge auth, headers, params, proxy with defaults', function() {
     expect(mergeConfig({ auth: undefined }, { auth: { user: 'foo', pass: 'test' } })).toEqual({
       auth: { user: 'foo', pass: 'test' }
     });
     expect(mergeConfig({ auth: { user: 'foo', pass: 'test' } }, { auth: { pass: 'foobar' } })).toEqual({
       auth: { user: 'foo', pass: 'foobar' }
     });
+    expect(mergeConfig({ params: { token: 'foo' } }, { params: { name: 'bar' } })).toEqual({
+      params: { token: 'foo', name: 'bar' }
+    });
   });
 
-  it('should overwrite auth, headers, proxy with a non-object value', function() {
+  it('should overwrite auth, headers, params, proxy with a non-object value', function() {
     expect(mergeConfig({ auth: { user: 'foo', pass: 'test' } }, { auth: false })).toEqual({
       auth: false
     });
